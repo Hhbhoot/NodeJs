@@ -2,10 +2,10 @@ const http = require('http')
 const fs = require('fs')
 // const port = 8080 ;
 
-const product = fs.readFileSync('product.json','utf-8')
+const product = JSON.parse(fs.readFileSync('product.json','utf-8'))
 const demo = fs.readFileSync('Demo.txt','utf-8')
 const index = fs.readFileSync('index.html','utf-8')
-
+// console.log(product)
 const server = http.createServer();
 
 server.on('request',(req,res)=>{
@@ -19,10 +19,21 @@ server.on('request',(req,res)=>{
         res.setHeader('content-type','text/html')
         res.end(index)
      }
-     else if(item[1] === 'product'){
-
+     else if(item[1] === 'product')
+     {
         res.setHeader('content-type','application/json')
-        res.end('product')
+
+        if( item.length === 3)
+        {
+            let id = +item[2]
+            console.log(id)
+            const prod = product.find((p)=> p.id === id)
+            
+            res.end(JSON.stringify(prod))
+
+        }
+        else
+        res.end(JSON.stringify(product))
      }
 
      else if( item[1]=== 'demo'){
